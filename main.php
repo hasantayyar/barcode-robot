@@ -4,6 +4,8 @@ define('APPPATH',__DIR__.'/');
 include(APPPATH.'lib/ean13.php');
 include(APPPATH.'views/header.php');
 
+
+
 ?>
 
   <div class="container">
@@ -32,7 +34,7 @@ include(APPPATH.'views/header.php');
               $ean13->article .= $ean13->generate_checksum();  
               $ean13->reverse();  
               $ean13->article = $ean13->codestring(); 
-              $src = $ean13->create_image();   
+              $src = 'data:image/png;base64,'.$ean13->create_image();   
             }else{
               $src = 'http://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl='.$str.'&amp;chld=H|0';
             }
