@@ -1,44 +1,10 @@
-<!-- http://chart.apis.google.com/chart?cht=qr&chs=300x300&chl=asdadasd&chld=H|0 -->
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Barcode Robot</title>
-  <link href="//netdna.bootstrapcdn.com/bootswatch/3.0.0/flatly/bootstrap.min.css" rel="stylesheet">
-  <style>
-  @import url(http://fonts.googleapis.com/css?family=Dosis:300,400&subset=latin,latin-ext);
-  body{font-family:'Dosis', sans-serif;margin:0;padding:0 0 50px;}
-  h1{color:#00BCF6; letter-spacing: 2px;font-family:'Dosis', sans-serif;}
-  </style>
-</head>
-<body>
+<?php
+define('APPPATH',__DIR__.'/');
 
-  <div class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <a href="/" class="navbar-brand">Barcode-robot</a>
-        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="navbar-collapse collapse" id="navbar-main">
-        <ul class="nav navbar-nav">
+include(APPPATH.'lib/ean13.php');
+include(APPPATH.'views/header.php');
 
-          <li>
-            <a href="#">Help</a>
-          </li>
-
-        </ul>
-
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#" target="_blank">Share</a></li>
-          <li><a href="#" target="_blank">Source</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
+?>
 
   <div class="container">
    <div class="bs-docs-section">
@@ -60,10 +26,21 @@
       $str = isset($_GET['v'])?$_GET['v']:false;
       $type = isset($_GET['t'])?$_GET['t']:false;
       if($str && $type):
+            if($type=='ean'){
+              $ean13 = new ean13;
+              $ean13->article = $str;   
+              $ean13->article .= $ean13->generate_checksum();  
+              $ean13->reverse();  
+              $ean13->article = $ean13->codestring(); 
+              $src = $ean13->create_image();   
+            }else{
+              $src = 'http://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl='.$str.'&amp;chld=H|0';
+            }
+
         ?>
       <div class="col-lg-4">
         <div class="row">
-          <img src="http://chart.apis.google.com/chart?cht=qr&amp;chs=300x300&amp;chl=<?php echo $str;?>&amp;chld=H|0" />
+          <img src="<?php echo $src;?>" />
         </div>
       </div>
 
@@ -87,7 +64,7 @@
             <input type="radio" name="t" id="t1" value="qr" checked="checked"/> QR
           </label>
           <label class="btn btn-primary">
-            <input type="radio" name="t" id="t2" value="EAN" /> EAN/UPC
+            <input type="radio" name="t" id="t2" value="ean" /> EAN/UPC
           </label>
           <label class="btn btn-primary">
             <input type="radio" name="t" id="t3" value="databar" /> GS1 DataBar
@@ -101,35 +78,24 @@
     </div>
 
 <!--
-            <div class="bs-example">
-              <p>
-                <button type="button" class="btn btn-default">Default</button>
-                <button type="button" class="btn btn-primary">Primary</button>
-                <button type="button" class="btn btn-success">Success</button>
-                <button type="button" class="btn btn-info">Info</button>
-                <button type="button" class="btn btn-warning">Warning</button>
-                <button type="button" class="btn btn-danger">Danger</button>
-              </p>
-            </div>
-          -->
+<div class="bs-example">
+<p>
+<button type="button" class="btn btn-default">Default</button>
+<button type="button" class="btn btn-primary">Primary</button>
+<button type="button" class="btn btn-success">Success</button>
+<button type="button" class="btn btn-info">Info</button>
+<button type="button" class="btn btn-warning">Warning</button>
+<button type="button" class="btn btn-danger">Danger</button>
+</p>
+</div>
+-->
 
         </div>
 
       </div>
     </div>
-
-    
-
-
-
   </div>
 </div>
 
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-<script>
-$(document).ready(function(){
-
-})
-</script>
-</body>
-</html>
+<?php 
+include('footer.php');
